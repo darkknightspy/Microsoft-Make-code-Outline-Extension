@@ -1,0 +1,8 @@
+{
+    "name": "Sprite Outline Extension",
+    "description": "An extension for outlining sprites with customization and button-triggered functions.",
+    "dependencies": {},
+    "files": [
+        "main.ts"
+    ]
+}
