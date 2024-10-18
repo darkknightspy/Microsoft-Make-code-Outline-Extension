@@ -1,0 +1,44 @@
+// Function to outline a sprite with customizable color, thickness, and offset
+//% blockId=customOutlineSprite block="outline sprite %sprite=variables_get(mySprite) with color %color=colors_and_id thickness %thickness offset %offset"
+export function customOutlineSprite(sprite: Sprite, color: number, thickness: number, offset: boolean): void {
+    let outlineSprite = sprites.create(sprite.image.clone(), sprite.kind());
+    let img = outlineSprite.image;
+
+    // Loop over each pixel to generate the outline
+    for (let x = 0; x < img.width; x++) {
+        for (let y = 0; y < img.height; y++) {
+            if (sprite.image.getPixel(x, y) !== 0) {
+                for (let dx = -thickness; dx <= thickness; dx++) {
+                    for (let dy = -thickness; dy <= thickness; dy++) {
+                        if (x + dx >= 0 && x + dx < img.width && y + dy >= 0 && y + dy < img.height) {
+                            if (sprite.image.getPixel(x + dx, y + dy) === 0) {
+                                img.setPixel(x + dx, y + dy, color);  // Set outline color with chosen thickness
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Apply the offset if selected
+    if (offset) {
+        outlineSprite.x = sprite.x - thickness;
+        outlineSprite.y = sprite.y - thickness;
+    } else {
+        outlineSprite.x = sprite.x;
+        outlineSprite.y = sprite.y;
+    }
+
+    // Bring the original sprite to the top
+    sprite.z = outlineSprite.z + 1;
+}
+
+// Function to bind any custom function to a button press event
+//% blockId=buttonTriggeredOutline block="on button %button pressed trigger custom function for sprite %sprite=variables_get(mySprite)"
+export function buttonTriggeredOutline(sprite: Sprite, button: ControllerButton, customFunction: () => void): void {
+    // Listen for the button press event
+    controller.player1.onButtonEvent(button, ControllerButtonEvent.Pressed, function () {
+        customFunction();  // Call the custom function when the button is pressed
+    });
+}
